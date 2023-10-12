@@ -1,6 +1,1 @@
-Hello World!
-<<<<<<< HEAD
-linia z fix_001
-=======
-druga linia
->>>>>>> dev
+Hello World again!!!
