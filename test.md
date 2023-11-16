@@ -111,3 +111,18 @@ select * from izba;
 drop table izba;
 show tables;
 ```
+
+# Zadania lab_05
+## Zadanie 1
+
+```sql
+select * from postac;
+delete from postac where id_postaci != 1 and rodzaj = 'wiking' limit 2;
+select * from postac;
+
+# Usunięcie klucza głównego
+alter table postac change id_postaci id_postaci int; # Krok 1 - pozbycie się auto increment
+alter table walizka drop foreign key walizka_ibfk_1; # Krok 2 - usunięcie klucza obcego
+alter table przetwory drop foreign key przetwory_ibfk_1; 
+alter table postac drop primary key;
+```
