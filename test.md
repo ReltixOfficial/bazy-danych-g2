@@ -123,6 +123,68 @@ select * from postac;
 # Usunięcie klucza głównego
 alter table postac change id_postaci id_postaci int; # Krok 1 - pozbycie się auto increment
 alter table walizka drop foreign key walizka_ibfk_1; # Krok 2 - usunięcie klucza obcego
-alter table przetwory drop foreign key przetwory_ibfk_1; 
+alter table przetwory drop foreign key przetwory_ibfk_1;
+alter table przetwory drop foreign key przetwory_ibfk_2; 
+show create table przetwory;
 alter table postac drop primary key;
+show create table postac;
+
+# varchar(n) -> max n znaków
+# char(n) -> dokładnie n znaków
+
+# alternatywne zastosowania select
+select 5;
+select now();
+select 6 + 5;
+```
+## Zadanie 2
+```sql
+alter table postac add column pesel char(11) first;
+describe postac;
+update postac set pesel='63817938475' + id_postaci;
+select * from postac;
+alter table postac add primary key(pesel);
+
+alter table postac change rodzaj rodzaj enum('wiking','ptak','kobieta','syrena') default null;
+
+insert into postac values(68291744831, 7, 'Gertruda Nieszczera', 'syrena', '1690-11-09', 48, default, default)
+```
+## Zadanie 3
+```sql
+show create table statek;
+
+update postac set statek='Niezatapialny II' where nazwa like '%a%';
+# % - dowolny ciąg znaków
+# _ - dokładnie jeden znak
+
+# nauczyć się funkcji regexp
+
+select * from statek;
+
+update statek set max_ladownosc=max_ladownosc * 0.7 
+where data_wodowania >= '1901-01-01' 
+and data_wodowania <= '2000-12-31';
+
+# alternatywnie: between '1901-01-01' and '2000-12-31'	/	where year(data_wodowania) between 1901 and 2000
+
+alter table postac add check(wiek < 1000);
+# check(warunek)
+```
+## Zadanie 4
+```sql
+alter table postac change rodzaj rodzaj enum('wiking','ptak','kobieta','syrena','wąż') default null;
+insert into postac values(68291744832, 8, 'Loko', 'wąż', '1680-11-09', 58, default, default);
+
+create table marynarz like postac;
+show create table postac;
+show create table marynarz;
+select * from marynarz;
+
+insert into marynarz select * from postac where statek is not null;
+
+alter table marynarz add foreign key (`statek`) references `statek` (`nazwa_statku`) on delete set null;
+```
+## zadanie 5
+```sql
+
 ```
