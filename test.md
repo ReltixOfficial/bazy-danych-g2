@@ -113,7 +113,7 @@ show tables;
 ```
 
 # Zadania lab_05
-## Zadanie 1
+## Zadanie 1 - Cicha woda
 
 ```sql
 select * from postac;
@@ -137,7 +137,8 @@ select 5;
 select now();
 select 6 + 5;
 ```
-## Zadanie 2
+## Zadanie 2 - Syrenka
+
 ```sql
 alter table postac add column pesel char(11) first;
 describe postac;
@@ -149,7 +150,7 @@ alter table postac change rodzaj rodzaj enum('wiking','ptak','kobieta','syrena')
 
 insert into postac values(68291744831, 7, 'Gertruda Nieszczera', 'syrena', '1690-11-09', 48, default, default)
 ```
-## Zadanie 3
+## Zadanie 3 - Przechyły
 ```sql
 show create table statek;
 
@@ -170,7 +171,7 @@ and data_wodowania <= '2000-12-31';
 alter table postac add check(wiek < 1000);
 # check(warunek)
 ```
-## Zadanie 4
+## Zadanie 4 - Wąż Loko
 ```sql
 alter table postac change rodzaj rodzaj enum('wiking','ptak','kobieta','syrena','wąż') default null;
 insert into postac values(68291744832, 8, 'Loko', 'wąż', '1680-11-09', 58, default, default);
@@ -184,7 +185,74 @@ insert into marynarz select * from postac where statek is not null;
 
 alter table marynarz add foreign key (`statek`) references `statek` (`nazwa_statku`) on delete set null;
 ```
-## zadanie 5
+## zadanie 5 - Sztorm
 ```sql
+update postac set statek = null where statek is not null;
+select * from postac;
 
+delete from postac where id_postaci != 1 and rodzaj = 'wiking' limit 1;
+
+delete from statek;
+alter table postac drop foreign key postac_ibfk_1;
+alter table marynarz drop foreign key marynarz_ibfk_1;
+drop table statek;
+
+create table zwierz(
+id int auto_increment primary key,
+nazwa varchar(30),
+wiek int);
+
+insert into zwierz select id_postaci, nazwa, wiek from postac where rodzaj='ptak' or rodzaj='wąż';
+select * from zwierz;
+```
+
+# Zadania lab_06
+## Zadanie 1 - Rozbitek
+
+```sql
+create table kreatura as select * from wikingowie.kreatura;
+create table zasob as select * from wikingowie.zasob;
+create table ekwipunek as select * from wikingowie.ekwipunek;
+
+select * from zasob;
+
+select * from zasob where rodzaj = 'jedzenie';
+
+select idZasobu, ilosc from ekwipunek where idKreatury in (1, 3, 5);
+```
+
+## Zadanie 2 - Kokos?
+```sql
+select * from kreatura where rodzaj != 'wiedzma' and udzwig >= 50;
+
+select * from zasob where waga between 2 and 5;
+
+select * from kreatura where nazwa like '%or%' and udzwig between 30 and 70;
+```
+
+## Zadanie 3 - Hamak
+```sql
+select * from zasob where month(dataPozyskania) in (07, 08);
+
+select * from zasob where rodzaj is not null order by waga;
+
+select * from kreatura where dataUr is not null order by dataUr limit 5;
+```
+
+## Zadanie 4 - Złota rybka
+```sql
+select distinct rodzaj from zasob;
+
+select concat(nazwa, ' - ', rodzaj) as nazwaRodzaj from kreatura where rodzaj like 'wi%';
+
+select waga * ilosc as calkowitaWaga from zasob where year(dataPozyskania) between 2000 and 2007;
+```
+
+## Zadanie 5 - Twardy sen
+```sql
+select nazwa, waga * 0.7 as wagaWlasciwa, waga * 0.3 as wagaOdpady from zasob;
+
+select * from zasob where rodzaj is null;
+
+select distinct rodzaj from zasob where rodzaj like 'Ba%' or rodzaj like '%os' order by rodzaj asc;
 ```
