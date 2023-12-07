@@ -256,3 +256,70 @@ select * from zasob where rodzaj is null;
 
 select distinct rodzaj from zasob where rodzaj like 'Ba%' or rodzaj like '%os' order by rodzaj asc;
 ```
+
+# Zadania lab_07
+## Zadanie 1 - Skwarek
+
+```sql
+# funkcje agragujące
+# avg(), sum(), count(), min(), max()
+
+select avg(waga) from kreatura where rodzaj = 'wiking';
+
+# count(kolumna) zlicza pomijając null, count(*) zlicza ilość wierszy, w tym null
+select avg(waga), rodzaj, count(waga), count(*) from kreatura group by rodzaj;
+
+select avg(year(now()) - year(dataUr)) as wiek, rodzaj from kreatura group by rodzaj;
+```
+
+## Zadanie 2 - Dymek
+```sql
+select sum(waga* ilosc), rodzaj from zasob group by rodzaj;
+
+select nazwa, avg(waga) from zasob 
+where ilosc >= 4
+group by nazwa having sum(waga) > 10 ;
+
+select count(distinct(nazwa)) as liczba, rodzaj from zasob 
+group by rodzaj having liczba > 1;
+```
+
+## Zadanie 3 - Pieprz
+```sql
+select k.nazwa, z.nazwa, e.ilosc from 
+kreatura k inner join ekwipunek e on k.idKreatury = e.idKreatury
+inner join zasob z on z.idZasobu = e.idZasobu
+order by k.nazwa asc;
+
+select k.nazwa from 
+kreatura k left join ekwipunek e on k.idKreatury = e.idKreatury
+where e.idKreatury is null;
+```
+
+## Zadanie 4 - Dziadek
+```sql
+select k.nazwa, z.nazwa from 
+kreatura k inner join ekwipunek e on k.idKreatury = e.idKreatury
+inner join zasob z on z.idZasobu = e.idZasobu
+where year(k.dataUr) between 1670 and 1679
+order by k.nazwa asc;
+
+select k.nazwa from 
+kreatura k inner join ekwipunek e on k.idKreatury = e.idKreatury
+inner join zasob z on z.idZasobu = e.idZasobu
+where z.rodzaj = 'jedzenie'
+order by k.dataUr desc limit 5;
+
+select concat(k1.nazwa,' - ', k2.nazwa) from
+kreatura k1 inner join kreatura k2
+where k1.idKreatury - k2.idKreatury = 5;
+```
+
+## Zadanie 5 - Zła nowina
+```sql
+select k.rodzaj, avg(z.waga * e.ilosc) from 
+kreatura k inner join ekwipunek e on k.idKreatury = e.idKreatury
+inner join zasob z on z.idZasobu = e.idZasobu
+where k.rodzaj not in ('malpa', 'waz')
+group by k.rodzaj having sum(e.ilosc) < 30;
+```
