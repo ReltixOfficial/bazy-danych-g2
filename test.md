@@ -322,4 +322,42 @@ kreatura k inner join ekwipunek e on k.idKreatury = e.idKreatury
 inner join zasob z on z.idZasobu = e.idZasobu
 where k.rodzaj not in ('malpa', 'waz')
 group by k.rodzaj having sum(e.ilosc) < 30;
+
+select a.nazwa, a.rodzaj, a.dataUr from kreatura a,
+(select min(dataUr) min, max(dataUr) max 
+from kreatura group by rodzaj) b
+where b.min = a.dataUr or b.max = a.dataUr;
+```
+
+# Zadania lab_08
+## Zadanie 1 - Spisek
+```sql
+insert into kreatura select * from wikingowie.kreatura;
+create table uczestnicy as select * from wikingowie.uczestnicy;
+create table etapy_wyprawy as select * from wikingowie.etapy_wyprawy;
+create table sektor as select * from wikingowie.sektor;
+create table wyprawa as select * from wikingowie.wyprawa;
+
+select k.nazwa from 
+kreatura k left join uczestnicy u on k.idKreatury = u.id_uczestnika
+where u.id_uczestnika is null;
+
+select w.nazwa, sum(e.ilosc) from ekwipunek e
+inner join uczestnicy u on e.idKreatury = u.id_uczestnika
+inner join wyprawa w on w.id_wyprawy = u.id_wyprawy
+group by w.nazwa;
+```
+## Zadanie 2 - Trudna decyzja
+```sql
+select w.nazwa, count(distinct u.id_uczestnika), group_concat(distinct k.nazwa separator ', ')
+from kreatura k
+inner join uczestnicy u on k.idKreatury = u.id_uczestnika
+inner join wyprawa w on w.id_wyprawy = u.id_wyprawy
+group by w.nazwa;
+
+select e.idEtapu, w.id_wyprawy, s.nazwa, w.data_rozpoczecia from
+etapy_wyprawy e 
+inner join wyprawa w on e.idWyprawy = w.id_wyprawy
+inner join sektor s on s.id_sektora = e.sektor
+order by w.data_rozpoczecia, e.kolejnosc;
 ```
