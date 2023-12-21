@@ -355,9 +355,49 @@ inner join uczestnicy u on k.idKreatury = u.id_uczestnika
 inner join wyprawa w on w.id_wyprawy = u.id_wyprawy
 group by w.nazwa;
 
-select e.idEtapu, w.id_wyprawy, s.nazwa, w.data_rozpoczecia from
+select e.idEtapu, w.id_wyprawy, s.nazwa,  k.nazwa as kierownik, w.data_rozpoczecia from
 etapy_wyprawy e 
 inner join wyprawa w on e.idWyprawy = w.id_wyprawy
 inner join sektor s on s.id_sektora = e.sektor
+inner join kreatura k on k.idKreatury = w.kierownik
 order by w.data_rozpoczecia, e.kolejnosc;
+```
+## Zadanie 3 - Misterny plan
+```sql
+select s.nazwa, count(e.sektor) from
+sektor s left join etapy_wyprawy e on s.id_sektora = e.sektor 
+group by nazwa;
+
+select k.nazwa, 
+if(count(u.id_uczestnika) > 0, 'Był na wyprawie',
+'Nie był na wyprawie') czy_byl
+from kreatura k
+left join uczestnicy u on u.id_uczestnika = k.idKreatury
+group by k.nazwa;
+```
+## Zadanie 4 - Pułapka
+```sql
+select w.nazwa, sum(length(e.dziennik))
+from wyprawa w 
+inner join etapy_wyprawy e on w.id_wyprawy = e.idWyprawy
+group by w.nazwa
+having sum(length(dziennik)) < 400;
+
+select w.nazwa, sum(z.waga * e.ilosc)/count(distinct u.id_uczestnika) as średni_ekwipunek
+from wyprawa w
+inner join uczestnicy u on u.id_wyprawy = w.id_wyprawy
+inner join ekwipunek e on e.idKreatury = u.id_uczestnika
+inner join zasob z on z.idZasobu = e.idZasobu
+group by w.nazwa;
+```
+## Zadanie 5 - Tchórz
+```sql
+use wikingowie;
+select w.nazwa, k.nazwa, datediff(w.data_rozpoczecia, k.dataUr) as wiek
+from kreatura k
+inner join uczestnicy u on k.idKreatury = u.id_uczestnika
+inner join wyprawa w on w.id_wyprawy = u.id_wyprawy
+inner join etapy_wyprawy e on e.idWyprawy = w.id_wyprawy
+where e.sektor = 7
+group by w.id_wyprawy, k.idKreatury;
 ```
