@@ -401,3 +401,72 @@ inner join etapy_wyprawy e on e.idWyprawy = w.id_wyprawy
 where e.sektor = 7
 group by w.id_wyprawy, k.idKreatury;
 ```
+# Lab_09
+## Zadanie 1 - Dziura
+```sql
+alter table kreatura modify waga int default 0;
+
+delimiter //
+create trigger kreatura_before_insert
+before insert on kreatura
+for each row
+begin
+	if new.waga <= 0
+    then
+		set new.waga = 1;
+	end if;
+end
+//
+delimiter ;
+
+delimiter //
+create trigger kreatura_before_update
+before update on kreatura
+for each row
+begin
+	if new.waga <= 0
+    then
+		set new.waga = 1;
+	end if;
+end
+//
+delimiter ;
+```
+## Zadanie 2 - Futro
+```sql
+create table archiwum_wypraw(
+id_wyprawy int,
+nazwa varchar(200) not null,
+data_rozpoczecia date not null,
+data_zakonczenia date not null,
+kierownik varchar(30));
+drop trigger wyprawa_before_delete;
+
+delimiter //
+create trigger wyprawa_before_delete
+before delete on wyprawa
+for each row
+begin
+	insert into archiwum_wypraw
+	select w.id_wyprawy, w.nazwa, w.data_rozpoczecia, w.data_zakonczenia, k.nazwa 
+	from wyprawa w inner join kreatura k 
+	on w.kierownik = k.idKreatury
+	where id_wyprawy = old.id_wyprawy;
+end
+//
+delimiter ;
+
+insert into wyprawa values (default, 'Test01', '1700-08-02', '1700-08-03', '1');
+
+delete from wyprawa where id_wyprawy = 0;
+```
+## Zadanie 3 - Spalony
+```sql
+delimiter //
+create procedure eliksir_sily(in id int)
+begin
+	update kreatura set udzwig = udzwig * 1.2 where id = idKreatury;
+end
+//
+delimiter ;
+```
