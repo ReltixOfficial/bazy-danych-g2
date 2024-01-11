@@ -1,3 +1,4 @@
+# Robert Gryska, nr. 176787
 # Zadania lab_04
 ## Test
 
@@ -470,3 +471,102 @@ end
 //
 delimiter ;
 ```
+# Powtórzenie - lab_3_zadania_1
+## Zadanie 1
+```sql
+select imie, nazwisko, year(data_urodzenia) from pracownik;
+```
+## Zadanie 2
+```sql
+select imie, nazwisko, year(now()) - year(data_urodzenia) as wiek from pracownik;
+```
+## Zadanie 3
+```sql
+select d.nazwa, count(distinct p.id_pracownika) from
+dzial d inner join pracownik p on d.id_dzialu = p.dzial
+group by d.id_dzialu;
+```
+## Zadanie 4
+```sql
+select k.nazwa_kategori, count(t.id_towaru) from
+kategoria k inner join towar t on k.id_kategori = t.kategoria
+group by k.id_kategori;
+```
+## Zadanie 5
+```sql
+select k.nazwa_kategori, group_concat(distinct t.nazwa_towaru separator ', ') from
+kategoria k inner join towar t on k.id_kategori = t.kategoria
+group by k.id_kategori;
+```
+## Zadanie 6
+```sql
+select round(avg(pensja), 2) from pracownik;
+```
+## Zadanie 7
+```sql
+select round(avg(pensja), 2) from pracownik where data_zatrudnienia <= '2019-01-11';
+```
+## Zadanie 8
+```sql
+select t.nazwa_towaru, count(distinct p.id_pozycji) from 
+towar t inner join pozycja_zamowienia p on t.id_towaru = p.towar
+group by t.id_towaru
+order by count(distinct p.id_pozycji) desc
+limit 10;
+```
+## Zadanie 9
+```sql
+select z.numer_zamowienia, z.id_zamowienia, sum(pz.ilosc * pz.cena) as wartość from zamowienie z
+inner join pozycja_zamowienia pz on z.id_zamowienia = pz.zamowienie
+where z.data_zamowienia between '2017-01-01' and '2017-03-31'
+group by z.id_zamowienia;
+```
+## Zadanie 10
+```sql
+select p.imie, p.nazwisko, sum(pz.ilosc * pz.cena) as wartosc from 
+pracownik p inner join zamowienie z on p.id_pracownika = z.pracownik_id_pracownika
+inner join pozycja_zamowienia pz on z.id_zamowienia = pz.zamowienie
+group by p.id_pracownika
+order by sum(pz.ilosc * pz.cena) desc;
+```
+# Powtórzenie - lab_3_zadania_2
+# Zadanie 1
+```sql
+select d.nazwa, min(p.pensja), max(p.pensja), avg(p.pensja) from 
+pracownik p inner join dzial d on p.dzial = d.id_dzialu
+group by d.id_dzialu;
+```
+# Zadanie 2
+```sql
+select k.pelna_nazwa, sum(pz.ilosc * pz.cena) as wartosc from 
+klient k inner join zamowienie z on z.klient = k.id_klienta
+inner join pozycja_zamowienia pz on pz.zamowienie = z.id_zamowienia
+group by z.id_zamowienia
+order by sum(pz.ilosc * pz.cena) desc
+limit 10;
+```
+# Zadanie 3
+```sql
+select year(z.data_zamowienia), sum(pz.ilosc * pz.cena) as przychód from 
+zamowienie z inner join pozycja_zamowienia pz on pz.zamowienie = z.id_zamowienia
+group by year(z.data_zamowienia)
+order by sum(pz.ilosc * pz.cena) desc;
+```
+# Zadanie 4
+```sql
+select sum(pz.ilosc * pz.cena) as wartość from 
+pozycja_zamowienia pz inner join zamowienie z on pz.zamowienie = z.id_zamowienia
+where z.status_zamowienia = 6;
+```
+# Zadanie 5
+```sql
+
+```
+# Zadanie 6
+```sql
+select sum(pz.ilosc * pz.cena) as łączny_przychód from 
+pozycja_zamowienia pz inner join zamowienie z on pz.zamowienie = z.id_zamowienia
+where z.status_zamowienia = 5;
+```
+# Zadanie 7
+```sql
