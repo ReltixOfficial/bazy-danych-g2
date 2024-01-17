@@ -560,7 +560,11 @@ where z.status_zamowienia = 6;
 ```
 # Zadanie 5
 ```sql
-
+select ak.miejscowosc, sum(pz.ilosc * pz.cena), count(ak.miejscowosc) from 
+adres_klienta ak inner join klient k on k.id_klienta = ak.klient
+inner join zamowienie z on z.klient = k.id_klienta
+inner join pozycja_zamowienia pz on z.id_zamowienia = pz.zamowienie
+group by ak.miejscowosc;
 ```
 # Zadanie 6
 ```sql
@@ -570,3 +574,26 @@ where z.status_zamowienia = 5;
 ```
 # Zadanie 7
 ```sql
+select year(z.data_zamowienia) as Rok, sum(pz.ilosc * pz.cena - t.cena_zakupu) as Przychód from pozycja_zamowienia pz 
+inner join towar t on t.id_towaru = pz.towar
+inner join zamowienie z on z.id_zamowienia = pz.zamowienie
+group by year(z.data_zamowienia)
+order by year(z.data_zamowienia);
+```
+# Zadanie 8
+```sql
+select k.nazwa_kategori, sum(sm.ilosc) from
+kategoria k inner join towar t on k.id_kategori = t.kategoria
+inner join stan_magazynowy sm on t.id_towaru = sm.towar
+group by k.nazwa_kategori;
+```
+# Zadanie 9
+```sql
+select monthname(data_urodzenia) as 'Miesiąc', count(distinct id_pracownika) as 'Liczba pracowników' from pracownik
+group by monthname(data_urodzenia)
+order by FIELD(Miesiąc,'January','February','March','April','May','June','July','August','September','October','November','December');
+```
+# Zadanie 10
+```sql
+
+```
